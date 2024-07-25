@@ -1,12 +1,13 @@
 use image::imageops::FilterType;
 use image::DynamicImage;
-
+use std::path::Path;
 fn main() {
     // Load the image from a file
-    let img = image::open("./icon-256x256.png");
+    let image_path=Path::from("./icon-256x256.png");
+    let img = image::open(&image_path);
     match img{
         Ok(v)=>{
-            println!("Image opened");
+            println!("Image opened {}",image_path.extension());
             // Resize dimensions
             let new_width = 800;
             let new_height = 700;
