@@ -1,10 +1,20 @@
 [package]
-name = "pwa_asset_generator"
+name = "resizer"
 version = "0.1.0"
 edition = "2021"
-
+description = "Resizer is a image resizing CLI tool."
+license = "MIT License"
+authors = [
+    "imrany <imranmat254@gmail.com>",
+]
+publish=false
+repository = "https://github.com/imrany/resizer"
+readme = "README.md"
+categories = ["CLI"]
+keywords = ["resize", "image"]
+rust-version = "1.79.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "4.5.10"
+clap = { version = "4.5.10", features = ["derive"]}
 image = "0.25.2"
