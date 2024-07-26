@@ -2,7 +2,7 @@ use image::imageops::FilterType;
 use image::DynamicImage;
 use std::{
     fs,
-    path::Path
+    path::PathBuf
 };
 use clap::Parser;
 
@@ -12,11 +12,11 @@ use clap::Parser;
 struct Args {
     /// Source image path
     #[arg(short, long)]
-    input: Path,
+    input: PathBuf,
 
     /// Output folder path
     #[arg(short, long)]
-    output: Path,
+    output: PathBuf,
 
 }
 
@@ -26,26 +26,36 @@ fn main() {
     let img = image::open(&args.input);
     match img{
         Ok(v)=>{
-            println!("Image opened",);
             // Resize dimensions
-            let new_width = 800;
-            let new_height = 700;
+            let square_dimensions:Vec<u32>=vec![16,32,48,72,96,128,144,152,192,384,512,57,60,76,114,120,180];
+            for i in 0..square_dimensions.len(){
+                let new_width=square_dimensions[i];
+                let new_height=square_dimensions[i];
+                // Resize the image
+                let resized_img = resize_image(&v, new_width, new_height);
 
-            // Resize the image
-            let resized_img = resize_image(&v, new_width, new_height);
-
-            let create_resized_image_folder=fs::create_dir(&arg.output);
-            match create_resized_image_folder{
-                Ok(_)=>{
-                    // Save the resized image to a file
-                    match resized_img.save(format!("./{}/{}-{new_width}x{new_height}.{}",&args.output,image_path.file_stem().unwrap().to_str().unwrap(),image_path.extension().unwrap().to_str().unwrap())){
-                        Ok(_)=>{
-                            println!("Image resized")
-                        },
-                        Err(e)=>println!("Failed to save resized image: {e}")
+                let create_resized_image_folder=fs::create_dir(&args.output);
+                match create_resized_image_folder{
+                    Ok(_)=>{
+                        // Save the resized image to a file
+                        match resized_img.save(format!("./{}/{}-{new_width}x{new_height}.{}",&args.output.to_str().unwrap(),args.input.file_stem().unwrap().to_str().unwrap(),args.input.extension().unwrap().to_str().unwrap())){
+                            Ok(_)=>{
+                                println!("./{}/{}-{new_width}x{new_height}.{}",&args.output.to_str().unwrap(),args.input.file_stem().unwrap().to_str().unwrap(),args.input.extension().unwrap().to_str().unwrap())
+                            },
+                            Err(e)=>eprintln!("Failed to save resized image: {e}")
+                        }
+                    },
+                    Err(_)=>{
+                        //eprintln!("{}",e);
+                        // Save the resized image to a file
+                        match resized_img.save(format!("./{}/{}-{new_width}x{new_height}.{}",&args.output.to_str().unwrap(),args.input.file_stem().unwrap().to_str().unwrap(),args.input.extension().unwrap().to_str().unwrap())){
+                            Ok(_)=>{
+                                println!("./{}/{}-{new_width}x{new_height}.{}",&args.output.to_str().unwrap(),args.input.file_stem().unwrap().to_str().unwrap(),args.input.extension().unwrap().to_str().unwrap())
+                            },
+                            Err(e)=>println!("Failed to save resized image: {e}")
+                        }
                     }
-                },
-                Err(_)=>eprintln!("Cannot create a folder for the resized images")
+                }
             }
         },
         Err(e)=>println!("Failed to open image: {e}")
