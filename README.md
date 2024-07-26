@@ -1,1 +1,2 @@
-#### Progressive Webapp Asset Gen
+#### Resizer
+A CLI tool for resizing images according to PWA icons dimensions
