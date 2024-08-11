@@ -22,8 +22,8 @@ struct Args {
     #[arg(short, long)]
     extension: Option<String>,
 
-    /// Enter resizing values, width and length i.e -v=[width,length]
-    #[arg(short, long)]
+    /// Enter resizing values, width and length i.e -values width length
+    #[arg(short, long, value_parser, num_args = 1..)]
     values: Option<Vec<u32>>
 }
 
